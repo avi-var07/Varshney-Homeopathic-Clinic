@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #fefcf8;
+    --foreground: #1a2e1e;
+    --primary: #1a824c;
+    --primary-light: #27a060;
+    --accent: #ff7f0e;
+    --accent-light: #ffc070;
+  }
+
+  * {
+    @apply scroll-smooth;
+  }
+
+  html {
+    @apply scroll-smooth;
+    font-size: 16px;
+  }
+
+  body {
+    @apply bg-cream-50 text-green-950 antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display tracking-tight;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f0faf4;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #86d8ab;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1a824c;
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-green-500 ring-offset-2;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-gradient text-white font-semibold rounded-2xl shadow-soft hover:shadow-glow transform hover:-translate-y-0.5 transition-all duration-200 text-base;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-green-700 font-semibold rounded-2xl border-2 border-green-200 hover:border-green-400 hover:bg-green-50 transform hover:-translate-y-0.5 transition-all duration-200 text-base;
+  }
+
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white font-semibold rounded-2xl shadow-soft hover:bg-[#1fba59] transform hover:-translate-y-0.5 transition-all duration-200 text-base;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-green-900 leading-tight;
+  }
+
+  .section-subtitle {
+    @apply text-base md:text-lg text-green-700/70 leading-relaxed max-w-2xl;
+  }
+
+  .card {
+    @apply bg-white rounded-3xl shadow-card border border-green-100/50 overflow-hidden hover:shadow-soft transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply card hover:-translate-y-1;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium;
+  }
+
+  .badge-green {
+    @apply badge bg-green-100 text-green-700;
+  }
+
+  .badge-saffron {
+    @apply badge bg-saffron-100 text-saffron-700;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-green-200 bg-white text-green-900 placeholder-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-200 text-base;
+  }
+
+  .section-pad {
+    @apply py-16 md:py-24;
+  }
+
+  .container-pad {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-green-700 to-green-500;
+  }
+
+  .text-gradient-saffron {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-saffron-600 to-saffron-400;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/50;
+  }
+
+  .glass-green {
+    @apply bg-green-50/80 backdrop-blur-md border border-green-200/50;
+  }
+}
+
+/* WhatsApp button pulse animation */
+.whatsapp-pulse {
+  animation: whatsappPulse 2s ease-in-out infinite;
+}
+
+@keyframes whatsappPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+/* Skeleton loading */
+.skeleton {
+  @apply animate-pulse bg-green-100 rounded-xl;
+}
+
+/* Hero section decorative elements */
+.hero-blob {
+  filter: blur(80px);
+  opacity: 0.3;
+  animation: blobMove 8s ease-in-out infinite alternate;
+}
+
+@keyframes blobMove {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+}
+
+/* Marquee animation for trust badges */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
