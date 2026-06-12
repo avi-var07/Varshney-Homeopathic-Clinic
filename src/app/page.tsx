@@ -4,6 +4,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import HeroSection from "@/components/sections/HeroSection";
 import AboutSection from "@/components/sections/AboutSection";
+import DoctorsSection from "@/components/sections/DoctorsSection";
 import TreatmentsSection from "@/components/sections/TreatmentsSection";
 import AppointmentSection from "@/components/sections/AppointmentSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
@@ -18,6 +19,7 @@ export default function HomePage() {
       <Navbar />
       <HeroSection />
       <AboutSection />
+      <DoctorsSection />
       <TreatmentsSection />
       <AppointmentSection />
       <TestimonialsSection />

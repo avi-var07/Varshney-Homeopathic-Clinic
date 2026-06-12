@@ -6,24 +6,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/treatments`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
+    { url: baseUrl,                    lastModified: now, changeFrequency: "weekly",  priority: 1.0 },
+    { url: `${baseUrl}/book`,          lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${baseUrl}/treatments`,    lastModified: now, changeFrequency: "weekly",  priority: 0.9 },
+    { url: `${baseUrl}/blog`,          lastModified: now, changeFrequency: "daily",   priority: 0.8 },
   ];
 
   const treatmentPages: MetadataRoute.Sitemap = TREATMENT_CATEGORIES.map((t) => ({

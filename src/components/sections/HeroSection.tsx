@@ -137,7 +137,7 @@ export default function HeroSection() {
 
                 {/* Qualification pills */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  {["B.H.M.S (Bhopal)", "Thyroid & Diabetes", "Classical Homeopathy", "EMT Advanced"].map(
+                  {["B.H.M.S (Bhopal)", "University Rank Holder", "Thyroid & Diabetes", "Classical Homeopathy", "EMT Advanced"].map(
                     (spec) => (
                       <span
                         key={spec}
@@ -194,24 +194,95 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Quick Treatment Highlights */}
+
+        {/* Quick Treatment Highlights — Premium animated grid */}
         <div className="pb-12">
-          <p className="text-center text-green-600 text-sm font-medium mb-4 uppercase tracking-wide">
-            We treat
+          <p className="text-center text-green-600 text-sm font-medium mb-6 uppercase tracking-widest">
+            ⚕️ Conditions We Treat
           </p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {[
-              "Migraine", "Hair Fall", "Skin Allergy", "PCOD/PCOS",
-              "Joint Pain", "Thyroid", "Anxiety", "Acidity", "Child Health",
-            ].map((t) => (
-              <Link
-                key={t}
-                href={`/treatments/${t.toLowerCase().replace(/\//g, "-").replace(/\s+/g, "-")}`}
-                className="px-4 py-2 bg-white/80 hover:bg-green-50 text-green-700 rounded-full text-sm border border-green-200 transition-all hover:border-green-400 hover:-translate-y-0.5"
-              >
-                {t}
-              </Link>
-            ))}
+
+          {/* Row 1 — scrolling left */}
+          <div className="mb-3 overflow-hidden">
+            <div className="flex animate-marquee">
+              {[
+                ...[ 
+                  { icon: "🧠", name: "Migraine", slug: "migraine" },
+                  { icon: "💆", name: "Hair Fall", slug: "hair-fall" },
+                  { icon: "🌿", name: "Skin Allergy", slug: "skin-allergy" },
+                  { icon: "🌸", name: "PCOD / PCOS", slug: "pcod-pcos" },
+                  { icon: "🦴", name: "Joint Pain", slug: "joint-pain" },
+                  { icon: "⚕️", name: "Thyroid", slug: "thyroid" },
+                  { icon: "🧘", name: "Anxiety", slug: "anxiety-stress" },
+                  { icon: "🫁", name: "Acidity & Gas", slug: "acidity-gas" },
+                  { icon: "👶", name: "Child Health", slug: "child-health" },
+                  { icon: "✨", name: "Acne & Pimples", slug: "acne-pimples" },
+                  { icon: "🍂", name: "Seasonal Diseases", slug: "seasonal-diseases" },
+                ],
+                ...[
+                  { icon: "🧠", name: "Migraine", slug: "migraine" },
+                  { icon: "💆", name: "Hair Fall", slug: "hair-fall" },
+                  { icon: "🌿", name: "Skin Allergy", slug: "skin-allergy" },
+                  { icon: "🌸", name: "PCOD / PCOS", slug: "pcod-pcos" },
+                  { icon: "🦴", name: "Joint Pain", slug: "joint-pain" },
+                  { icon: "⚕️", name: "Thyroid", slug: "thyroid" },
+                  { icon: "🧘", name: "Anxiety", slug: "anxiety-stress" },
+                  { icon: "🫁", name: "Acidity & Gas", slug: "acidity-gas" },
+                  { icon: "👶", name: "Child Health", slug: "child-health" },
+                  { icon: "✨", name: "Acne & Pimples", slug: "acne-pimples" },
+                  { icon: "🍂", name: "Seasonal Diseases", slug: "seasonal-diseases" },
+                ],
+              ].map((t, i) => (
+                <Link
+                  key={`r1-${i}`}
+                  href={`/treatments/${t.slug}`}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white/80 hover:bg-green-50 text-green-700 rounded-full text-sm font-medium border border-green-200 transition-all hover:border-green-400 hover:-translate-y-0.5 hover:shadow-soft flex-shrink-0 mx-1.5"
+                >
+                  <span>{t.icon}</span>
+                  <span>{t.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Row 2 — scrolling right (reversed) */}
+          <div className="overflow-hidden">
+            <div className="flex animate-marquee-reverse">
+              {[
+                ...[
+                  { icon: "🌬️", name: "Sinus & Allergy", slug: "sinus-allergy" },
+                  { icon: "🫀", name: "Hypertension", slug: "hypertension" },
+                  { icon: "🩸", name: "Diabetes Care", slug: "diabetes" },
+                  { icon: "😴", name: "Insomnia", slug: "insomnia" },
+                  { icon: "🤧", name: "Asthma", slug: "asthma" },
+                  { icon: "💪", name: "Cervical Pain", slug: "cervical-pain" },
+                  { icon: "🦷", name: "Dental Issues", slug: "dental-issues" },
+                  { icon: "👁️", name: "Eye Problems", slug: "eye-problems" },
+                  { icon: "🤰", name: "Women's Health", slug: "womens-health" },
+                  { icon: "🧓", name: "Elderly Care", slug: "elderly-care" },
+                ],
+                ...[
+                  { icon: "🌬️", name: "Sinus & Allergy", slug: "sinus-allergy" },
+                  { icon: "🫀", name: "Hypertension", slug: "hypertension" },
+                  { icon: "🩸", name: "Diabetes Care", slug: "diabetes" },
+                  { icon: "😴", name: "Insomnia", slug: "insomnia" },
+                  { icon: "🤧", name: "Asthma", slug: "asthma" },
+                  { icon: "💪", name: "Cervical Pain", slug: "cervical-pain" },
+                  { icon: "🦷", name: "Dental Issues", slug: "dental-issues" },
+                  { icon: "👁️", name: "Eye Problems", slug: "eye-problems" },
+                  { icon: "🤰", name: "Women's Health", slug: "womens-health" },
+                  { icon: "🧓", name: "Elderly Care", slug: "elderly-care" },
+                ],
+              ].map((t, i) => (
+                <Link
+                  key={`r2-${i}`}
+                  href={`/treatments/${t.slug}`}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white/80 hover:bg-green-50 text-green-700 rounded-full text-sm font-medium border border-green-200 transition-all hover:border-green-400 hover:-translate-y-0.5 hover:shadow-soft flex-shrink-0 mx-1.5"
+                >
+                  <span>{t.icon}</span>
+                  <span>{t.name}</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>

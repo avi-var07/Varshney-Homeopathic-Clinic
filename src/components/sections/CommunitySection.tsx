@@ -86,12 +86,12 @@ export default function CommunitySection() {
               ))}
             </div>
 
-            {/* WhatsApp Community */}
+            {/* WhatsApp Community — Direct Chat */}
             <a
               href={WHATSAPP_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 bg-[#25D366] hover:bg-[#1fba59] rounded-3xl p-5 transition-all group"
+              className="flex items-center gap-4 bg-[#25D366] hover:bg-[#1fba59] rounded-3xl p-5 transition-all group mb-4"
             >
               <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
                 <FaWhatsapp className="w-7 h-7 text-white" />
@@ -100,6 +100,32 @@ export default function CommunitySection() {
                 <p className="text-white font-bold text-lg">Join Our WhatsApp Community</p>
                 <p className="text-green-100 text-sm">
                   Free health tips, camp announcements & instant doctor access
+                </p>
+              </div>
+              <span className="text-white text-xl group-hover:translate-x-1 transition-transform ml-auto">
+                →
+              </span>
+            </a>
+
+            {/* WhatsApp Channel — Regular Updates */}
+            <a
+              href="https://whatsapp.com/channel/0029Vb7r8loB4hdae9w3EO2a"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 bg-gradient-to-r from-[#128C7E] to-[#075E54] hover:from-[#0e7a6e] hover:to-[#064d45] rounded-3xl p-5 transition-all group border border-white/10"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                <div className="relative">
+                  <FaWhatsapp className="w-7 h-7 text-white" />
+                  <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-saffron-400 rounded-full flex items-center justify-center">
+                    <span className="text-[7px] font-bold text-white">📢</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p className="text-white font-bold text-lg">Follow Our WhatsApp Channel</p>
+                <p className="text-green-200 text-sm">
+                  Get regular homeopathy tips, health updates & wellness articles
                 </p>
               </div>
               <span className="text-white text-xl group-hover:translate-x-1 transition-transform ml-auto">

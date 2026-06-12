@@ -120,6 +120,7 @@ export default function AboutSection() {
               {/* Credential badges */}
               <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-green-200/50">
                 <span className="badge-green text-xs">🏅 B.H.M.S (Bhopal)</span>
+                <span className="badge-saffron text-xs">🏆 University Rank Holder</span>
                 <span className="badge-green text-xs">🌎 Yoga University, America</span>
                 <span className="badge-green text-xs">🚑 EMT Advanced (NSDC)</span>
               </div>

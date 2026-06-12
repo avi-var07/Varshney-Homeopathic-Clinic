@@ -26,7 +26,10 @@ export const ADMIN_SECRET = requireEnv("ADMIN_SECRET");
 
 // ── Optional variables ───────────────────────────────────
 export const FORMSPREE_ENDPOINT = optionalEnv("FORMSPREE_ENDPOINT", "");
-export const APP_URL = optionalEnv(
-  "NEXT_PUBLIC_APP_URL",
-  "http://localhost:3000"
-);
+export const RESEND_API_KEY = optionalEnv("RESEND_API_KEY", "");
+export const RESEND_FROM_EMAIL = optionalEnv("RESEND_FROM_EMAIL", "noreply@varshneyhomoeopathy.com");
+export const CLINIC_EMAIL = optionalEnv("CLINIC_EMAIL", "");
+export const CLOUDINARY_CLOUD_NAME = optionalEnv("CLOUDINARY_CLOUD_NAME", "");
+export const CLOUDINARY_API_KEY = optionalEnv("CLOUDINARY_API_KEY", "");
+export const CLOUDINARY_API_SECRET = optionalEnv("CLOUDINARY_API_SECRET", "");
+export const APP_URL = optionalEnv("NEXT_PUBLIC_APP_URL", "http://localhost:3000");

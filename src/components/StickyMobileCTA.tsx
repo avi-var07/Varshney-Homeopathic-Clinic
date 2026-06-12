@@ -18,7 +18,7 @@ export default function StickyMobileCTA() {
           <span className="text-xs font-medium">Call Now</span>
         </a>
         <Link
-          href="/#appointment"
+          href="/book"
           className="flex-1 flex flex-col items-center justify-center py-3 gap-1 bg-green-gradient text-white hover:opacity-90 transition-opacity"
           aria-label="Book appointment"
         >

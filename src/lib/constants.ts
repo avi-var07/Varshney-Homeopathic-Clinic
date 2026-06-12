@@ -19,12 +19,16 @@ export const WHATSAPP_MESSAGE = encodeURIComponent(
 );
 export const WHATSAPP_LINK = `https://wa.me/${PHONE_RAW}?text=${WHATSAPP_MESSAGE}`;
 
+export const UPI_ID = process.env.NEXT_PUBLIC_UPI_ID || "dramanvarshney@ybl";
+export const CONSULTATION_FEE_ONLINE = "₹200";
+export const CONSULTATION_FEE_OFFLINE = "₹150";
+
 export const CLINIC_TIMINGS = [
   { day: "Monday – Saturday", time: "11:00 AM – 2:00 PM & 4:00 PM – 8:00 PM" },
   { day: "Sunday", time: "Closed" },
 ];
 
-export const DOCTOR_PHOTO = "/images/Dr Aman.png";
+export const DOCTOR_PHOTO = "https://res.cloudinary.com/dqunwksxz/image/upload/f_auto,q_auto/v1781270551/vhc-site/Dr-Aman.jpg";
 
 export const DOCTOR_QUALIFICATIONS = [
   {
@@ -242,6 +246,7 @@ export const NAV_LINKS = [
   { href: "/blog", label: "Health Blog" },
   { href: "/#gallery", label: "Gallery" },
   { href: "/#contact", label: "Contact" },
+  { href: "/book", label: "Book Appointment" },
 ];
 
 export const BLOG_CATEGORIES = [

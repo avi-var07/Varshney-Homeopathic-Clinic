@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NAV_LINKS, PHONE, WHATSAPP_LINK } from "@/lib/constants";
-import { FiMenu, FiX, FiPhone } from "react-icons/fi";
+import { FiMenu, FiX, FiPhone, FiUser, FiLogOut } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user, openLogin, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -33,7 +35,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
             <div className="relative w-10 h-10 flex-shrink-0">
               <Image
-                src="/images/logo.png"
+                src="https://res.cloudinary.com/dqunwksxz/image/upload/f_auto,q_auto/v1781270570/vhc-site/logo.png"
                 alt="Varshney Homeopathic Clinic Logo"
                 fill
                 className="object-contain"
@@ -41,11 +43,11 @@ export default function Navbar() {
                 sizes="40px"
               />
             </div>
-            <div className="hidden sm:block leading-tight">
-              <p className="text-sm font-bold text-green-800 leading-none">
+            <div className="leading-tight">
+              <p className="text-[11px] sm:text-sm font-bold text-green-800 leading-none">
                 Varshney Homeopathic
               </p>
-              <p className="text-xs text-green-600 leading-tight mt-0.5">Clinic</p>
+              <p className="text-[10px] sm:text-xs text-green-600 leading-tight mt-0.5">Clinic</p>
             </div>
           </Link>
 
@@ -80,12 +82,40 @@ export default function Navbar() {
               <FaWhatsapp className="w-4 h-4 flex-shrink-0" />
               <span>WhatsApp</span>
             </a>
-            <Link
-              href="/#appointment"
-              className="flex items-center gap-1.5 px-3 py-2 bg-green-gradient text-white text-sm font-semibold rounded-xl shadow-soft hover:shadow-glow transition-all whitespace-nowrap"
-            >
-              Book Appointment
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-1.5 px-3 py-2 bg-green-50 text-green-700 text-sm font-semibold rounded-xl border border-green-200 hover:bg-green-100 transition-colors whitespace-nowrap"
+                >
+                  <FiUser className="w-4 h-4 flex-shrink-0" />
+                  <span className="hidden xl:inline max-w-[100px] truncate">{user.name.split(" ")[0]}</span>
+                </Link>
+                <button
+                  onClick={() => logout()}
+                  className="flex items-center gap-1.5 px-3 py-2 text-red-500 text-sm font-semibold rounded-xl hover:bg-red-50 transition-colors whitespace-nowrap"
+                  title="Logout"
+                >
+                  <FiLogOut className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => openLogin("patient")}
+                  className="flex items-center gap-1.5 px-3 py-2 text-green-700 text-sm font-semibold rounded-xl border border-green-200 hover:bg-green-50 transition-colors whitespace-nowrap"
+                >
+                  <FiUser className="w-4 h-4" />
+                  Login
+                </button>
+                <Link
+                  href="/book"
+                  className="flex items-center gap-1.5 px-3 py-2 bg-green-gradient text-white text-sm font-semibold rounded-xl shadow-soft hover:shadow-glow transition-all whitespace-nowrap"
+                >
+                  Book Appointment
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -131,13 +161,42 @@ export default function Navbar() {
                 <FaWhatsapp className="w-5 h-5" />
                 WhatsApp Consultation
               </a>
-              <Link
-                href="/#appointment"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-green-gradient text-white font-semibold rounded-xl"
-                onClick={() => setIsOpen(false)}
-              >
-                Book Appointment
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-green-50 text-green-700 font-semibold rounded-xl border border-green-200"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <FiUser className="w-4 h-4" />
+                    My Dashboard ({user.name.split(" ")[0]})
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setIsOpen(false); }}
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-red-50 text-red-600 font-semibold rounded-xl border border-red-200"
+                  >
+                    <FiLogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => { openLogin(); setIsOpen(false); }}
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-white text-green-700 font-semibold rounded-xl border-2 border-green-300"
+                  >
+                    <FiUser className="w-4 h-4" />
+                    Login / Sign Up
+                  </button>
+                  <Link
+                    href="/book"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-green-gradient text-white font-semibold rounded-xl"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Book Appointment
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

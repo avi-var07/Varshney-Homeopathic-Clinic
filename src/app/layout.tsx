@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { CLINIC_NAME, DOCTOR_NAME, LOCATION, PHONE } from "@/lib/constants";
+import { AuthProvider } from "@/context/AuthContext";
+import AuthGate from "@/components/AuthGate";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -156,7 +158,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
-        <Toaster
+        <AuthProvider>
+          <AuthGate />
+          <Toaster
           position="top-center"
           toastOptions={{
             duration: 4000,
@@ -184,7 +188,8 @@ export default function RootLayout({
             },
           }}
         />
-        {children}
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
