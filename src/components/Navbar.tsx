@@ -33,21 +33,21 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-            <div className="relative w-10 h-10 flex-shrink-0">
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0">
               <Image
                 src="https://res.cloudinary.com/dqunwksxz/image/upload/f_auto,q_auto/v1781270570/vhc-site/logo.png"
                 alt="Varshney Homeopathic Clinic Logo"
                 fill
                 className="object-contain"
                 priority
-                sizes="40px"
+                sizes="56px"
               />
             </div>
             <div className="leading-tight">
-              <p className="text-[11px] sm:text-sm font-bold text-green-800 leading-none">
+              <p className="text-[15px] sm:text-lg font-bold text-green-800 leading-none">
                 Varshney Homeopathic
               </p>
-              <p className="text-[10px] sm:text-xs text-green-600 leading-tight mt-0.5">Clinic</p>
+              <p className="text-[13px] sm:text-sm text-green-600 leading-tight mt-0.5">Clinic</p>
             </div>
           </Link>
 

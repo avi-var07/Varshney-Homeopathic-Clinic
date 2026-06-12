@@ -85,12 +85,12 @@ interface Campaign {
 
 const campaigns: Campaign[] = [
   {
-    id: "hinauli-may-2024",
+    id: "hinauli-nov-2022",
     title: "Free Medical Checkup Camp",
     description:
       "A free homeopathic medical checkup camp organized by Varshney Homeopathic Clinic in collaboration with Chetna Society. Villagers received free consultations, health screenings, and homeopathic medicines from Dr. Ravi Prakash Varshney and Dr. Aman Varshney.",
     location: "Hinauli, Mughalsarai",
-    date: "May 2024",
+    date: "7 November, 2022",
     badge: "Free Camp",
     coverImage:
       "https://res.cloudinary.com/dqunwksxz/image/upload/f_auto,q_auto/v1781270554/vhc-site/health-campaign/Hinauli/WhatsApp-Image-2026-06-05-at-9-25-13-PM.jpg",

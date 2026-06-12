@@ -41,7 +41,7 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center py-12">
 
           {/* Left: Content */}
-          <div className="order-2 lg:order-1 text-center lg:text-left">
+          <div className="order-1 text-center lg:text-left">
             {/* Location badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full text-green-700 text-sm font-medium mb-6">
               <span>📍</span>
@@ -105,7 +105,7 @@ export default function HeroSection() {
           </div>
 
           {/* Right: Doctor Card — self-contained, no overflow badges */}
-          <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+          <div className="order-2 flex justify-center lg:justify-end">
             <div className="w-80 sm:w-96 bg-white rounded-4xl shadow-xl border border-green-100 overflow-hidden">
 
               {/* Doctor image */}
