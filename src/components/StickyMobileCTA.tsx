@@ -19,7 +19,7 @@ export default function StickyMobileCTA() {
         </a>
         <Link
           href="/book"
-          className="flex-1 flex flex-col items-center justify-center py-3 gap-1 bg-green-gradient text-white hover:opacity-90 transition-opacity"
+          className="flex-1 flex flex-col items-center justify-center py-3 gap-1 bg-green-gradient text-white hover:opacity-90 transition-opacity book-pulse-ring"
           aria-label="Book appointment"
         >
           <FiCalendar className="w-5 h-5" />

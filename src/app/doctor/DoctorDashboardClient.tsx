@@ -8,7 +8,7 @@ import {
   FiCalendar, FiClock, FiCheck, FiX, FiUpload,
   FiFileText, FiLogOut, FiRefreshCw, FiVideo,
   FiPackage, FiUser, FiMessageSquare, FiSend,
-  FiChevronDown, FiChevronUp,
+  FiChevronDown, FiChevronUp, FiStar,
 } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 
@@ -77,6 +77,14 @@ export default function DoctorDashboardClient() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploadingFor, setUploadingFor] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"appointments" | "reviews">("appointments");
+
+  // Reviews
+  const [reviews, setReviews] = useState<Array<{
+    _id: string; name: string; location?: string; problem?: string;
+    rating: number; text: string; createdAt: string;
+  }>>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
   useEffect(() => {
     // Verify the user has doctor or admin role
@@ -89,6 +97,20 @@ export default function DoctorDashboardClient() {
       });
     loadAppointments();
   }, [filter, dateFilter]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const loadReviews = async () => {
+    setReviewsLoading(true);
+    try {
+      const res = await fetch("/api/reviews?limit=50");
+      if (res.status === 401) { router.push("/admin"); return; }
+      if (res.ok) {
+        const data = await res.json();
+        setReviews(data.reviews || []);
+      }
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
 
   const loadAppointments = async () => {
     setLoading(true);
@@ -244,14 +266,15 @@ export default function DoctorDashboardClient() {
             <Link href="/" className="text-green-600 text-sm hover:text-green-700 font-medium hidden sm:block">
               Website →
             </Link>
-            <button onClick={loadAppointments}
+            <button
+              onClick={() => { activeTab === "appointments" ? loadAppointments() : loadReviews(); }}
               className="p-2 rounded-xl bg-green-50 text-green-600 hover:bg-green-100 transition-colors">
               <FiRefreshCw className="w-4 h-4" />
             </button>
             <button
               onClick={async () => {
                 await fetch("/api/auth/logout", { method: "POST" });
-                router.push("/admin");
+                router.push("/");
               }}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors text-sm font-medium"
             >
@@ -282,7 +305,74 @@ export default function DoctorDashboardClient() {
           ))}
         </div>
 
-        {/* Filters */}
+        {/* Tab switcher */}
+        <div className="flex gap-2 mb-5">
+          <button onClick={() => setActiveTab("appointments")}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+              activeTab === "appointments" ? "bg-green-gradient text-white shadow-soft" : "bg-white text-green-700 border border-green-200 hover:bg-green-50"
+            }`}>
+            <FiCalendar className="w-4 h-4" />
+            Appointments
+          </button>
+          <button onClick={() => { setActiveTab("reviews"); loadReviews(); }}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+              activeTab === "reviews" ? "bg-green-gradient text-white shadow-soft" : "bg-white text-green-700 border border-green-200 hover:bg-green-50"
+            }`}>
+            <FiStar className="w-4 h-4" />
+            Patient Reviews
+          </button>
+        </div>
+
+        {/* Reviews panel */}
+        {activeTab === "reviews" && (
+          <div className="bg-white rounded-2xl border border-green-100 shadow-card p-6">
+            <h2 className="font-bold text-green-900 text-lg mb-5 flex items-center gap-2">
+              <FiStar className="w-5 h-5 text-saffron-500" />
+              Patient Reviews
+            </h2>
+            {reviewsLoading ? (
+              <div className="space-y-3">
+                {[1,2,3].map((i) => <div key={i} className="skeleton h-20 rounded-2xl" />)}
+              </div>
+            ) : reviews.length === 0 ? (
+              <div className="text-center py-12 text-green-400">
+                <FiStar className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p>No reviews yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {reviews.map((review) => (
+                  <div key={review._id} className="p-4 bg-green-50 rounded-2xl border border-green-100">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <p className="font-bold text-green-900 text-sm">{review.name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {review.location && <span className="text-green-500 text-xs">{review.location}</span>}
+                          {review.problem && (
+                            <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs">{review.problem}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-0.5 flex-shrink-0">
+                        {[...Array(5)].map((_,i) => (
+                          <FiStar key={i} className={`w-4 h-4 ${i < review.rating ? "text-saffron-400 fill-current" : "text-gray-200"}`} />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-green-700 text-sm leading-relaxed">"{review.text}"</p>
+                    <p className="text-green-400 text-xs mt-2">
+                      {new Date(review.createdAt).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" })}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Appointments panel */}
+        {activeTab === "appointments" && (
+          <>
         <div className="flex flex-wrap gap-2 mb-5">
           {[
             { v: "all", l: "All" },

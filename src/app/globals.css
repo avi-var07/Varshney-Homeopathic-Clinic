@@ -220,3 +220,30 @@
 .legacy-gradient {
   background: linear-gradient(180deg, #f0faf4 0%, #fefcf8 30%, #fff8ed 60%, #f0faf4 100%);
 }
+
+/* Book Appointment Ringing/Vibrating Animation */
+@keyframes bookPulseRing {
+  0%, 80%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  82% {
+    transform: scale(1.05) rotate(-3deg);
+  }
+  84% {
+    transform: scale(1.05) rotate(3deg);
+  }
+  86% {
+    transform: scale(1.05) rotate(-3deg);
+  }
+  88% {
+    transform: scale(1.05) rotate(3deg);
+  }
+  90% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.book-pulse-ring {
+  animation: bookPulseRing 3.5s ease-in-out infinite;
+  transform-origin: center;
+}

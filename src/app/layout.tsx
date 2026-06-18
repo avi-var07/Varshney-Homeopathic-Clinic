@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import { CLINIC_NAME, DOCTOR_NAME, LOCATION, PHONE } from "@/lib/constants";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthGate from "@/components/AuthGate";
+import FloatingBookCTA from "@/components/FloatingBookCTA";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -160,6 +161,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
         <AuthProvider>
           <AuthGate />
+          <FloatingBookCTA />
           <Toaster
           position="top-center"
           toastOptions={{

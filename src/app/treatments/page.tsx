@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
+import Image from "next/image";
 import { TREATMENT_CATEGORIES, CLINIC_NAME } from "@/lib/constants";
 import { FiArrowRight } from "react-icons/fi";
 
@@ -49,11 +50,16 @@ export default function TreatmentsPage() {
                 href={`/treatments/${treatment.id}`}
                 className="group bg-white rounded-3xl border border-green-100 shadow-card hover:shadow-soft transition-all duration-300 hover:-translate-y-1 p-6 flex flex-col"
               >
-                {/* Icon */}
-                <div
-                  className={`w-16 h-16 rounded-3xl bg-gradient-to-br ${treatment.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 border ${treatment.borderColor}`}
-                >
-                  <span className="text-3xl">{treatment.icon}</span>
+                {/* Image */}
+                <div className="relative w-full h-40 mb-5 rounded-2xl overflow-hidden border border-green-100 group-hover:shadow-md transition-all duration-300">
+                  <Image
+                    src={treatment.image}
+                    alt={treatment.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${treatment.color} opacity-40 mix-blend-multiply`}></div>
                 </div>
 
                 {/* Content */}

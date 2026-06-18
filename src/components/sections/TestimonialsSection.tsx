@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { FaStar, FaQuoteLeft } from "react-icons/fa";
 import { TESTIMONIALS } from "@/lib/constants";
-import ReviewForm from "@/components/ReviewForm";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -102,31 +101,16 @@ export default function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Bottom CTA + Review Form */}
+        {/* Bottom CTA + Share */}
         <div className="bg-gradient-to-br from-green-50 to-cream-100 rounded-4xl p-8 border border-green-100">
-          <p className="text-green-600 text-base mb-2 text-center">
-            🌿 Ready to start your healing journey?
-          </p>
+          <p className="text-green-600 text-base mb-2 text-center">🌿 Ready to start your healing journey?</p>
           <h3 className="text-2xl font-bold text-green-900 mb-4 text-center">
             Join Thousands of Happy Patients
           </h3>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-            <a href="/#appointment" className="btn-primary">
-              📅 Book Free Consultation
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/book" className="btn-primary book-pulse-ring">
+              📅 Book Appointment Now
             </a>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-green-200 pt-8 mt-4">
-            <h3 className="text-xl font-bold text-green-900 mb-2 text-center">
-              Share Your Experience
-            </h3>
-            <p className="text-green-600 text-sm text-center mb-6">
-              Treated by Dr. Aman Varshney? Help others by leaving a review.
-            </p>
-            <div className="max-w-2xl mx-auto bg-white rounded-3xl p-6 shadow-card border border-green-100">
-              <ReviewForm />
-            </div>
           </div>
         </div>
       </div>

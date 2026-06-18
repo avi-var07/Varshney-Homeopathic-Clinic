@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   CLINIC_NAME,
   DOCTOR_NAME,
@@ -9,7 +10,9 @@ import {
   TREATMENT_CATEGORIES,
 } from "@/lib/constants";
 import { FaWhatsapp, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-import { FiClock, FiMail } from "react-icons/fi";
+import { FiClock } from "react-icons/fi";
+
+const LOGO_URL = "https://res.cloudinary.com/dqunwksxz/image/upload/f_auto,q_auto/v1781270570/vhc-site/logo.png";
 
 export default function Footer() {
   const treatments = TREATMENT_CATEGORIES.slice(0, 6);
@@ -17,20 +20,27 @@ export default function Footer() {
   return (
     <footer className="bg-green-950 text-white">
       {/* Main Footer */}
-      <div className="container-pad py-16">
+      <div className="container-pad py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-5">
-              <div className="w-12 h-12 rounded-2xl bg-green-600 flex items-center justify-center">
-                <span className="text-2xl">🌿</span>
+              <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-white/10 flex-shrink-0">
+                <Image
+                  src={LOGO_URL}
+                  alt={`${CLINIC_NAME} Logo`}
+                  fill
+                  className="object-contain p-1"
+                  sizes="48px"
+                />
               </div>
               <div>
-                <p className="font-bold text-white text-lg leading-tight">
-                  Varshney
+                <p className="font-extrabold text-white text-base leading-tight">
+                  Varshney Homeopathic
                 </p>
-                <p className="text-green-300 text-sm leading-tight">
-                  Homeopathic Clinic
+                <p className="text-green-400 text-xs leading-tight mt-0.5">
+                  Clinic · Since 1992
                 </p>
               </div>
             </Link>

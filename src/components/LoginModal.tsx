@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   FiX, FiMail, FiArrowRight, FiCheck,
   FiUser, FiLock, FiRefreshCw, FiShield,
@@ -463,16 +464,23 @@ export default function LoginModal() {
 
           {/* ── Doctor footer note ── */}
           {mode === "patient" && step === "email" && (
-            <div className="mt-4 pt-4 border-t border-green-100 text-center">
-              <p className="text-green-400 text-xs">
-                Are you{" "}
+            <div className="mt-4 pt-4 border-t border-green-100">
+              <div className="flex items-center justify-center gap-4 text-xs">
                 <button
                   onClick={() => setMode("doctor")}
-                  className="text-green-600 font-semibold hover:text-green-800 transition-colors underline"
+                  className="text-green-600 font-semibold hover:text-green-800 transition-colors"
                 >
-                  {DOCTOR_NAME}?
+                  Doctor Login
                 </button>
-              </p>
+                <span className="text-green-200">|</span>
+                <Link
+                  href="/admin"
+                  onClick={closeLogin}
+                  className="text-green-500 hover:text-green-700 transition-colors font-medium"
+                >
+                  Admin Login →
+                </Link>
+              </div>
             </div>
           )}
         </div>
