@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -406,9 +407,14 @@ export default function BlogDetailPage({ params }: Props) {
                         href={`/blog/${related.slug}`}
                         className="flex gap-3 group"
                       >
-                        <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 text-2xl">
-                          {related.category === "Migraine" ? "🧠" :
-                           related.category === "Hair Care" ? "💆" : "🌿"}
+                        <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                          <Image
+                            src={related.image || "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&q=80"}
+                            alt={related.title}
+                            fill
+                            className="object-cover"
+                            sizes="56px"
+                          />
                         </div>
                         <div>
                           <p className="text-green-800 text-sm font-semibold group-hover:text-green-600 transition-colors line-clamp-2">

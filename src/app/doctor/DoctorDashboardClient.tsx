@@ -688,6 +688,8 @@ export default function DoctorDashboardClient() {
             })}
           </div>
         )}
+          </>
+        )}
       </div>
     </main>
   );

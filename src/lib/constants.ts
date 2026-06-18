@@ -280,6 +280,7 @@ export const SAMPLE_BLOGS = [
     title: "Homeopathic Treatment for Migraine: A Complete Guide",
     slug: "homeopathic-treatment-migraine",
     category: "Migraine",
+    image: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=800&q=80&auto=format&fit=crop",
     excerpt:
       "Discover how homeopathy provides long-lasting relief from chronic migraines without side effects. Learn about the best homeopathic remedies and lifestyle changes.",
     readTime: "5 min read",
@@ -291,6 +292,7 @@ export const SAMPLE_BLOGS = [
     title: "Hair Fall in Summer: Causes and Homeopathic Solutions",
     slug: "hair-fall-causes-homeopathy",
     category: "Hair Care",
+    image: "https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&q=80&auto=format&fit=crop",
     excerpt:
       "Excessive hair fall affects millions of Indians. Understand the root causes and how homeopathy addresses them holistically for permanent results.",
     readTime: "4 min read",
@@ -302,6 +304,7 @@ export const SAMPLE_BLOGS = [
     title: "Best Homeopathic Clinic in Mughalsarai – Varshney Clinic",
     slug: "best-homeopathic-clinic-mughalsarai",
     category: "Homeopathy Education",
+    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80&auto=format&fit=crop",
     excerpt:
       "Looking for trusted homeopathic care in Mughalsarai or Chandauli? Learn about the expert care available at Varshney Homeopathic Clinic near Varanasi.",
     readTime: "3 min read",
@@ -313,6 +316,7 @@ export const SAMPLE_BLOGS = [
     title: "PCOD Symptoms and Natural Homeopathic Treatment",
     slug: "pcod-symptoms-homeopathy",
     category: "Women's Health",
+    image: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&q=80&auto=format&fit=crop",
     excerpt:
       "PCOD affects 1 in 5 Indian women. Learn how homeopathy treats the root cause of PCOD through hormonal balance without harsh synthetic hormones.",
     readTime: "6 min read",
@@ -324,6 +328,7 @@ export const SAMPLE_BLOGS = [
     title: "Natural Acidity Relief Tips and Homeopathic Remedies",
     slug: "acidity-relief-tips",
     category: "Acidity",
+    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80&auto=format&fit=crop",
     excerpt:
       "Chronic acidity disrupts daily life. Discover dietary changes, lifestyle tips, and powerful homeopathic remedies that provide lasting relief from acidity.",
     readTime: "4 min read",
@@ -335,6 +340,7 @@ export const SAMPLE_BLOGS = [
     title: "How to Boost Immunity Before Monsoon Season",
     slug: "seasonal-viral-prevention",
     category: "Seasonal Health",
+    image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=800&q=80&auto=format&fit=crop",
     excerpt:
       "Monsoon brings viral infections. Learn how homeopathic preventive care strengthens your immunity and keeps your family healthy during seasonal changes.",
     readTime: "4 min read",

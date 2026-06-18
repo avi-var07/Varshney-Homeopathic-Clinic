@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -69,13 +70,13 @@ export default function BlogPage() {
               >
                 {/* Image */}
                 <div className="h-48 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center relative overflow-hidden">
-                  <span className="text-6xl opacity-50">
-                    {blog.category === "Migraine" ? "🧠" :
-                     blog.category === "Hair Care" ? "💆" :
-                     blog.category === "Homeopathy Education" ? "🌿" :
-                     blog.category === "Women's Health" ? "🌸" :
-                     blog.category === "Acidity" ? "🫁" : "🍂"}
-                  </span>
+                  <Image
+                    src={blog.image || "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&q=80"}
+                    alt={blog.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-green-800/20 to-transparent"></div>
                   <div className="absolute top-3 right-3">
                     <span className="px-2.5 py-1 bg-white/90 text-green-700 rounded-full text-xs font-semibold">
