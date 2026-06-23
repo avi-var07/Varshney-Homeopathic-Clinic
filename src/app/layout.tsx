@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { CLINIC_NAME, DOCTOR_NAME, LOCATION, PHONE } from "@/lib/constants";
+import { BASE_URL } from "@/lib/siteConfig";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthGate from "@/components/AuthGate";
 import FloatingBookCTA from "@/components/FloatingBookCTA";
@@ -14,7 +15,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://varshneyhomoeopathy.com"),
+  metadataBase: new URL(BASE_URL),
   title: {
     default: `${CLINIC_NAME} | ${DOCTOR_NAME} - Mughalsarai, Chandauli`,
     template: `%s | ${CLINIC_NAME}`,
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://varshneyhomoeopathy.com",
+    url: BASE_URL,
     siteName: CLINIC_NAME,
     title: `${CLINIC_NAME} | ${DOCTOR_NAME}`,
     description:
@@ -77,7 +78,7 @@ export const metadata: Metadata = {
   //   google: "your-actual-verification-code",
   // },
   alternates: {
-    canonical: "https://varshneyhomoeopathy.com",
+    canonical: BASE_URL,
   },
 };
 
@@ -101,7 +102,7 @@ export default function RootLayout({
               description:
                 "Serving patients through family practice since 1992. Expert homeopathic clinic in Mughalsarai, Chandauli, UP providing safe and natural treatment for all diseases.",
               foundingDate: "1992",
-              url: "https://varshneyhomoeopathy.com",
+              url: BASE_URL,
               telephone: PHONE,
               address: {
                 "@type": "PostalAddress",
