@@ -331,44 +331,7 @@ export default function PatientDashboardClient() {
                           </div>
                         )}
 
-                        {/* Consultation notes */}
-                        {appt.consultationNotes.length > 0 && (
-                          <div>
-                            <p className="text-green-800 font-semibold text-sm mb-3 flex items-center gap-2">
-                              <FiFileText className="w-4 h-4" /> Doctor's Advice
-                            </p>
-                            <div className="space-y-3">
-                              {appt.consultationNotes.map((note) => (
-                                <div key={note._id} className="bg-white rounded-2xl p-4 border border-green-100">
-                                  <p className="text-green-900 text-sm font-medium mb-2">{note.advice}</p>
-                                  {note.medicines.length > 0 && (
-                                    <div className="mb-2">
-                                      <p className="text-green-600 text-xs font-semibold mb-1">💊 Medicines</p>
-                                      <div className="flex flex-wrap gap-1">
-                                        {note.medicines.map((m, i) => (
-                                          <span key={i} className="px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-xs border border-green-200">
-                                            {m}
-                                          </span>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  )}
-                                  {note.notes && (
-                                    <p className="text-green-600 text-xs mt-1">📝 {note.notes}</p>
-                                  )}
-                                  {note.followUpDate && (
-                                    <p className="text-amber-700 text-xs mt-1 font-medium">
-                                      📅 Follow-up: {new Date(note.followUpDate).toLocaleDateString("en-IN")}
-                                    </p>
-                                  )}
-                                  <p className="text-green-400 text-xs mt-2">
-                                    Added {new Date(note.addedAt).toLocaleDateString("en-IN")}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+
 
                         {/* Re-upload payment if rejected */}
                         {appt.paymentStatus === "payment_rejected" && (

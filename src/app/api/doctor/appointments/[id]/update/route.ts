@@ -72,7 +72,7 @@ export async function PATCH(
 
     // ── Appointment status ─────────────────────────────────────────────────
     if (body.status !== undefined) {
-      const validStatuses = ["confirmed","cancelled","completed","payment_pending","payment_verification_pending"];
+      const validStatuses = ["confirmed","consultation_started","cancelled","completed","payment_pending","payment_verification_pending"];
       if (!validStatuses.includes(body.status)) {
         return NextResponse.json({ message: "Invalid status." }, { status: 400 });
       }

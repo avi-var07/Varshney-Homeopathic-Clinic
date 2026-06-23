@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PatientAppointment from "@/models/PatientAppointment";
+import PatientProfile from "@/models/PatientProfile";
 import { getPatientSession, checkPublicRateLimit } from "@/lib/auth";
 import { notifyClinicNewAppointment } from "@/lib/email";
 
@@ -40,12 +41,32 @@ export async function POST(req: NextRequest) {
     const isValidObjectId = (id: string) =>
       /^[a-f\d]{24}$/i.test(id);
 
+    // Find or create Patient Profile
+    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedMobile = mobile.trim();
+    let profile = await PatientProfile.findOne({
+      $or: [{ email: normalizedEmail }, { mobile: normalizedMobile }],
+    });
+
+    if (!profile) {
+      profile = await PatientProfile.create({
+        userId: (session?.id && isValidObjectId(session.id)) ? session.id : undefined,
+        fullName: fullName.trim(),
+        email: normalizedEmail,
+        mobile: normalizedMobile,
+        age: age.trim(),
+        gender,
+        address: address?.trim(),
+      });
+    }
+
     const appointment = await PatientAppointment.create({
       patientId: (session?.id && isValidObjectId(session.id))
         ? session.id
         : undefined,
+      patientProfileId: profile._id,
       fullName: fullName.trim(),
-      email: email.toLowerCase().trim(),
+      email: normalizedEmail,
       mobile: mobile.trim(),
       age: age.trim(),
       gender,
@@ -96,6 +117,7 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     const appointments = await PatientAppointment.find({ email: session.email })
+      .select("-consultationNotes -doctorNotes")
       .sort({ createdAt: -1 })
       .lean();
 

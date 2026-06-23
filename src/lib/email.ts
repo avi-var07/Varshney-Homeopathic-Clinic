@@ -235,3 +235,56 @@ export async function notifyClinicNewAppointment(data: {
     html: wrapHtml(body, "New Appointment"),
   });
 }
+
+// ─── Appointment Reminder ────────────────────────────────────────────────────
+
+export async function sendAppointmentReminder(data: {
+  name: string;
+  email: string;
+  tokenNumber: string;
+  date: string;
+  time: string;
+  type: string;
+}): Promise<void> {
+  const typeLabel = data.type === "online" ? "Online Consultation" : "Clinic Visit";
+  const body = `
+    <h2 style="color:#166534;margin:0 0 8px;">Appointment Reminder ⏰</h2>
+    <p style="color:#374151;margin:0 0 20px;">Dear ${data.name}, this is a reminder for your upcoming appointment.</p>
+    <div style="background:#f0faf4;border-radius:12px;padding:20px;margin:20px 0;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="color:#6b7280;font-size:13px;padding:6px 0;width:130px;">Token</td><td style="color:#166534;font-weight:700;font-size:16px;">${data.tokenNumber || "N/A"}</td></tr>
+        <tr><td style="color:#6b7280;font-size:13px;padding:6px 0;">Type</td><td style="color:#374151;font-weight:600;">${typeLabel}</td></tr>
+        <tr><td style="color:#6b7280;font-size:13px;padding:6px 0;">Date</td><td style="color:#374151;font-weight:600;">${data.date}</td></tr>
+        <tr><td style="color:#6b7280;font-size:13px;padding:6px 0;">Time</td><td style="color:#374151;font-weight:600;">${data.time}</td></tr>
+      </table>
+    </div>
+    <p style="color:#374151;font-size:14px;">For any queries, call/WhatsApp: <strong>${PHONE}</strong></p>`;
+  await sendEmail({
+    to: data.email,
+    subject: `Appointment Reminder – ${data.date} | ${CLINIC_NAME}`,
+    html: wrapHtml(body, "Appointment Reminder"),
+  });
+}
+
+// ─── Follow-Up Reminder ──────────────────────────────────────────────────────
+
+export async function sendFollowUpReminder(data: {
+  name: string;
+  email: string;
+  followUpDate: string;
+}): Promise<void> {
+  const body = `
+    <h2 style="color:#166534;margin:0 0 8px;">Follow-Up Reminder 📅</h2>
+    <p style="color:#374151;margin:0 0 20px;">Dear ${data.name},</p>
+    <p style="color:#374151;margin:0 0 20px;">Dr. Varshney has scheduled your follow-up visit for <strong style="color:#166534;">${data.followUpDate}</strong>.</p>
+    <div style="background:#f0faf4;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
+      <p style="color:#374151;font-weight:600;font-size:16px;margin:0 0 16px;">Please book your appointment for your follow-up date.</p>
+      <a href="${process.env.NEXT_PUBLIC_BASE_URL || "https://varshneyhomoeopathy.com"}/book" style="display:inline-block;background:linear-gradient(135deg,#166534,#16a34a);color:#fff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:15px;">Book Follow-Up Appointment</a>
+    </div>
+    <p style="color:#374151;font-size:14px;">For any queries, call/WhatsApp: <strong>${PHONE}</strong></p>`;
+  await sendEmail({
+    to: data.email,
+    subject: `Follow-Up Reminder – ${data.followUpDate} | ${CLINIC_NAME}`,
+    html: wrapHtml(body, "Follow-Up Reminder"),
+  });
+}

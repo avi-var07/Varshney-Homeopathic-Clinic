@@ -10,6 +10,7 @@ export type AppointmentStatus =
   | "payment_pending"
   | "payment_verification_pending"
   | "confirmed"
+  | "consultation_started"
   | "cancelled"
   | "completed";
 export type DeliveryStatus =
@@ -39,6 +40,7 @@ export interface IConsultationNote {
 export interface IPatientAppointment extends Document {
   // Patient info
   patientId?: mongoose.Types.ObjectId; // linked user if logged in
+  patientProfileId?: mongoose.Types.ObjectId; // linked patient profile
   fullName: string;
   email: string;
   mobile: string;
@@ -105,6 +107,7 @@ const ConsultationNoteSchema = new Schema<IConsultationNote>(
 const PatientAppointmentSchema = new Schema<IPatientAppointment>(
   {
     patientId: { type: Schema.Types.ObjectId, ref: "User" },
+    patientProfileId: { type: Schema.Types.ObjectId, ref: "PatientProfile" },
     fullName: { type: String, required: true, trim: true, maxlength: 100 },
     email: { type: String, required: true, lowercase: true, trim: true },
     mobile: {
@@ -147,6 +150,7 @@ const PatientAppointmentSchema = new Schema<IPatientAppointment>(
         "payment_pending",
         "payment_verification_pending",
         "confirmed",
+        "consultation_started",
         "cancelled",
         "completed",
       ],
