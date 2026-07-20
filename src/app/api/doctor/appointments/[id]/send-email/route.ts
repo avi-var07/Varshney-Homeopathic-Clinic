@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PatientAppointment from "@/models/PatientAppointment";
-import { isAdminAuthenticated } from "@/lib/auth";
+import { isDoctorAuthenticated } from "@/lib/auth";
 import {
   sendAppointmentConfirmation,
   sendMeetLinkEmail,
   sendAppointmentReminder,
   sendFollowUpReminder,
+  sendPrescriptionReadyEmail,
+  sendConsultationCompleteEmail,
 } from "@/lib/email";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -78,6 +80,31 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           followUpDate,
         });
         return NextResponse.json({ message: "Follow-up reminder sent to patient." });
+      }
+
+      case "prescription_ready":
+        await sendPrescriptionReadyEmail({
+          name: appointment.fullName,
+          email: appointment.email,
+          tokenNumber: appointment.tokenNumber || "",
+        });
+        return NextResponse.json({ message: "Prescription notification sent to patient." });
+
+      case "consultation_complete": {
+        const notes = appointment.consultationNotes || [];
+        const latest = notes
+          .filter((n: any) => n.followUpDate)
+          .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())[0];
+        const followUpDate = latest?.followUpDate
+          ? new Date(latest.followUpDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+          : undefined;
+        await sendConsultationCompleteEmail({
+          name: appointment.fullName,
+          email: appointment.email,
+          tokenNumber: appointment.tokenNumber || "",
+          followUpDate,
+        });
+        return NextResponse.json({ message: "Consultation complete email sent to patient." });
       }
 
       default:

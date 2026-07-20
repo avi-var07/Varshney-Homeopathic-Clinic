@@ -10,6 +10,8 @@ export type AppointmentStatus =
   | "payment_pending"
   | "payment_verification_pending"
   | "confirmed"
+  | "questionnaire_pending"
+  | "questionnaire_submitted"
   | "consultation_started"
   | "cancelled"
   | "completed";
@@ -39,8 +41,8 @@ export interface IConsultationNote {
 
 export interface IPatientAppointment extends Document {
   // Patient info
-  patientId?: mongoose.Types.ObjectId; // linked user if logged in
-  patientProfileId?: mongoose.Types.ObjectId; // linked patient profile
+  patientId?: mongoose.Types.ObjectId;
+  patientProfileId?: mongoose.Types.ObjectId;
   fullName: string;
   email: string;
   mobile: string;
@@ -49,11 +51,20 @@ export interface IPatientAppointment extends Document {
   address?: string;
   symptoms: string;
 
+  // Questionnaire — stored as array of complaint objects
+  questionnaireAnswers?: Array<{
+    organ: string;
+    symptom: string;
+    answers: Record<string, string>;
+    submittedAt: string;
+  }>;
+  questionnaireSubmittedAt?: Date;
+
   // Appointment details
   type: AppointmentType;
   preferredDate: string;
   preferredTime: string;
-  tokenNumber?: string; // e.g. VHC-2026-001
+  tokenNumber?: string;
 
   // Payment
   paymentStatus: PaymentStatus;
@@ -61,6 +72,7 @@ export interface IPatientAppointment extends Document {
   paymentScreenshotPublicId?: string;
   upiTransactionId?: string;
   paymentRejectionReason?: string;
+  approvedAt?: Date;
 
   // Status
   status: AppointmentStatus;
@@ -70,12 +82,12 @@ export interface IPatientAppointment extends Document {
   prescriptions: IPrescription[];
   meetLink?: string;
 
-  // Delivery (for online consultations with medicine)
+  // Delivery
   deliveryStatus: DeliveryStatus;
   deliveryNotes?: string;
   trackingNumber?: string;
 
-  // Admin notes
+  // Doctor's private notes
   doctorNotes?: string;
 
   createdAt: Date;
@@ -122,7 +134,11 @@ const PatientAppointmentSchema = new Schema<IPatientAppointment>(
       required: true,
     },
     address: { type: String, trim: true },
-    symptoms: { type: String, required: true, maxlength: 500 },
+    symptoms: { type: String, required: true, maxlength: 1000 },
+
+    // Questionnaire — array of complaint entries (organ + symptom + answers)
+    questionnaireAnswers: { type: Schema.Types.Mixed, default: [] },
+    questionnaireSubmittedAt: { type: Date },
 
     type: { type: String, enum: ["online", "offline"], required: true },
     preferredDate: { type: String, required: true },
@@ -143,6 +159,7 @@ const PatientAppointmentSchema = new Schema<IPatientAppointment>(
     paymentScreenshotPublicId: { type: String },
     upiTransactionId: { type: String, trim: true },
     paymentRejectionReason: { type: String },
+    approvedAt: { type: Date },
 
     status: {
       type: String,
@@ -150,6 +167,8 @@ const PatientAppointmentSchema = new Schema<IPatientAppointment>(
         "payment_pending",
         "payment_verification_pending",
         "confirmed",
+        "questionnaire_pending",
+        "questionnaire_submitted",
         "consultation_started",
         "cancelled",
         "completed",

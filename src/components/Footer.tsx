@@ -80,7 +80,7 @@ export default function Footer() {
                 { href: "/blog", label: "Health Blog" },
                 { href: "/#gallery", label: "Gallery" },
                 { href: "/#contact", label: "Contact Us" },
-                { href: "/admin", label: "Admin Panel" },
+                { href: "/doctor/login", label: "Doctor Login" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link

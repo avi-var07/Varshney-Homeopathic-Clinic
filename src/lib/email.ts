@@ -19,7 +19,7 @@
  */
 
 import nodemailer from "nodemailer";
-import { CLINIC_NAME, PHONE } from "@/lib/constants";
+import { CLINIC_NAME, PHONE, PERMANENT_MEET_LINK } from "@/lib/constants";
 
 // ─── Shared HTML wrapper ─────────────────────────────────────────────────────
 
@@ -121,7 +121,7 @@ export async function sendOtpEmail(
     <p style="color:#374151;margin:0 0 20px;">Use this OTP to log in to your patient account.</p>
     <div style="background:#f0faf4;border:2px dashed #16a34a;border-radius:12px;padding:20px;text-align:center;margin:20px 0;">
       <p style="font-size:36px;font-weight:700;color:#166534;margin:0;letter-spacing:8px;">${otp}</p>
-      <p style="color:#16a34a;font-size:12px;margin:8px 0 0;">Valid for 10 minutes · Do not share</p>
+      <p style="color:#16a34a;font-size:12px;margin:8px 0 0;">Valid for 5 minutes · Do not share</p>
     </div>
     <p style="color:#6b7280;font-size:13px;margin:16px 0 0;">If you did not request this, please ignore this email.</p>`;
   await sendEmail({
@@ -279,12 +279,88 @@ export async function sendFollowUpReminder(data: {
     <p style="color:#374151;margin:0 0 20px;">Dr. Varshney has scheduled your follow-up visit for <strong style="color:#166534;">${data.followUpDate}</strong>.</p>
     <div style="background:#f0faf4;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
       <p style="color:#374151;font-weight:600;font-size:16px;margin:0 0 16px;">Please book your appointment for your follow-up date.</p>
-      <a href="${process.env.NEXT_PUBLIC_BASE_URL || "https://varshneyhomoeopathy.com"}/book" style="display:inline-block;background:linear-gradient(135deg,#166534,#16a34a);color:#fff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:15px;">Book Follow-Up Appointment</a>
+      <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://varshneyhomoeopathy.com"}/book" style="display:inline-block;background:linear-gradient(135deg,#166534,#16a34a);color:#fff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:15px;">Book Follow-Up Appointment</a>
     </div>
     <p style="color:#374151;font-size:14px;">For any queries, call/WhatsApp: <strong>${PHONE}</strong></p>`;
   await sendEmail({
     to: data.email,
     subject: `Follow-Up Reminder – ${data.followUpDate} | ${CLINIC_NAME}`,
     html: wrapHtml(body, "Follow-Up Reminder"),
+  });
+}
+
+// ─── Prescription Ready ───────────────────────────────────────────────────────
+
+export async function sendPrescriptionReadyEmail(data: {
+  name: string;
+  email: string;
+  tokenNumber: string;
+}): Promise<void> {
+  const url = `${process.env.NEXT_PUBLIC_APP_URL || "https://varshneyhomoeopathy.com"}/dashboard`;
+  const body = `
+    <h2 style="color:#166534;margin:0 0 8px;">Your Prescription is Ready 📋</h2>
+    <p style="color:#374151;margin:0 0 20px;">Dear ${data.name},</p>
+    <p style="color:#374151;margin:0 0 20px;">Your prescription for consultation <strong style="color:#166534;">${data.tokenNumber}</strong> has been uploaded by Dr. Aman Varshney.</p>
+    <div style="background:#f0faf4;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
+      <a href="${url}" style="display:inline-block;background:linear-gradient(135deg,#166534,#16a34a);color:#fff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:15px;">View &amp; Download Prescription</a>
+    </div>
+    <p style="color:#374151;font-size:14px;">For any queries, call/WhatsApp: <strong>${PHONE}</strong></p>`;
+  await sendEmail({
+    to: data.email,
+    subject: `Prescription Ready – Token ${data.tokenNumber} | ${CLINIC_NAME}`,
+    html: wrapHtml(body, "Prescription Ready"),
+  });
+}
+
+// ─── Consultation Complete ────────────────────────────────────────────────────
+
+export async function sendConsultationCompleteEmail(data: {
+  name: string;
+  email: string;
+  tokenNumber: string;
+  followUpDate?: string;
+}): Promise<void> {
+  const body = `
+    <h2 style="color:#166534;margin:0 0 8px;">Consultation Complete ✅</h2>
+    <p style="color:#374151;margin:0 0 20px;">Dear ${data.name},</p>
+    <p style="color:#374151;margin:0 0 20px;">Your consultation <strong style="color:#166534;">${data.tokenNumber}</strong> has been completed. Thank you for choosing Varshney Homeopathic Clinic.</p>
+    ${data.followUpDate ? `
+    <div style="background:#f0faf4;border-radius:12px;padding:16px;margin:16px 0;">
+      <p style="color:#374151;margin:0;">Your next follow-up: <strong style="color:#166534;">${data.followUpDate}</strong></p>
+    </div>` : ""}
+    <p style="color:#374151;font-size:14px;">For any queries, call/WhatsApp: <strong>${PHONE}</strong></p>`;
+  await sendEmail({
+    to: data.email,
+    subject: `Consultation Complete – Token ${data.tokenNumber} | ${CLINIC_NAME}`,
+    html: wrapHtml(body, "Consultation Complete"),
+  });
+}
+
+// ─── Notify Clinic of New Review ─────────────────────────────────────────────
+
+export async function notifyClinicNewReview(data: {
+  name: string;
+  location?: string;
+  problem?: string;
+  rating: number;
+  text: string;
+}): Promise<void> {
+  if (!CLINIC_EMAIL) return;
+  const stars = "⭐".repeat(data.rating);
+  const body = `
+    <h2 style="color:#166534;margin:0 0 16px;">New Patient Review ${stars}</h2>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr><td style="color:#6b7280;font-size:13px;padding:5px 0;width:120px;">Patient</td><td style="color:#374151;font-weight:600;">${data.name}</td></tr>
+      ${data.location ? `<tr><td style="color:#6b7280;font-size:13px;padding:5px 0;">Location</td><td style="color:#374151;">${data.location}</td></tr>` : ""}
+      ${data.problem ? `<tr><td style="color:#6b7280;font-size:13px;padding:5px 0;">Condition</td><td style="color:#374151;">${data.problem}</td></tr>` : ""}
+      <tr><td style="color:#6b7280;font-size:13px;padding:5px 0;">Rating</td><td style="color:#374151;">${stars} (${data.rating}/5)</td></tr>
+    </table>
+    <div style="background:#f0faf4;border-radius:10px;padding:14px 16px;margin-top:16px;border-left:4px solid #16a34a;">
+      <p style="color:#166534;font-style:italic;margin:0;font-size:14px;line-height:1.6;">"${data.text}"</p>
+    </div>`;
+  await sendEmail({
+    to: CLINIC_EMAIL,
+    subject: `New Review ${stars} from ${data.name} | ${CLINIC_NAME}`,
+    html: wrapHtml(body, "New Review"),
   });
 }

@@ -1,85 +1,145 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PatientAppointment from "@/models/PatientAppointment";
-import { isAdminAuthenticated } from "@/lib/auth";
+import { isDoctorAuthenticated } from "@/lib/auth";
 import { generateAppointmentToken } from "@/lib/token";
 import {
   sendAppointmentConfirmation,
   sendPaymentRejectionEmail,
 } from "@/lib/email";
+import { PERMANENT_MEET_LINK } from "@/lib/constants";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
+  const { id } = params;
+  if (!id?.match(/^[0-9a-fA-F]{24}$/)) {
+    return NextResponse.json({ message: "Invalid appointment ID." }, { status: 400 });
+  }
+
+  let body: { action?: string; reason?: string };
   try {
-    const { action, reason } = await req.json(); // action: "approve" | "reject"
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ message: "Invalid request body." }, { status: 400 });
+  }
 
-    if (!["approve", "reject"].includes(action)) {
-      return NextResponse.json({ message: "Action must be approve or reject." }, { status: 400 });
-    }
+  const { action, reason } = body;
 
+  if (!["approve", "reject"].includes(action ?? "")) {
+    return NextResponse.json(
+      { message: "Action must be 'approve' or 'reject'." },
+      { status: 400 }
+    );
+  }
+
+  try {
     await connectDB();
 
-    const appointment = await PatientAppointment.findById(params.id);
+    const appointment = await PatientAppointment.findById(id);
     if (!appointment) {
       return NextResponse.json({ message: "Appointment not found." }, { status: 404 });
     }
 
+    // Guard: only approve if actually pending verification
+    if (action === "approve" && appointment.paymentStatus === "payment_approved") {
+      return NextResponse.json(
+        { message: "Payment already approved.", tokenNumber: appointment.tokenNumber },
+        { status: 200 }
+      );
+    }
+
     if (action === "approve") {
-      // Generate token
+      // Generate token (race-condition safe)
       const token = await generateAppointmentToken(
-        appointment.type,
+        appointment.type as "online" | "offline",
         appointment.preferredDate
       );
 
-      appointment.tokenNumber = token;
-      appointment.paymentStatus = "payment_approved";
-      appointment.status = "confirmed";
-      await appointment.save();
+      // Atomic update — everything or nothing
+      const updated = await PatientAppointment.findOneAndUpdate(
+        {
+          _id: id,
+          paymentStatus: { $in: ["payment_verification_pending", "payment_rejected"] },
+        },
+        {
+          $set: {
+            tokenNumber: token,
+            paymentStatus: "payment_approved",
+            status: "confirmed",
+            approvedAt: new Date(),
+            // For online consultations, attach the permanent Meet link automatically
+            ...(appointment.type === "online" ? { meetLink: PERMANENT_MEET_LINK } : {}),
+          },
+        },
+        { new: true }
+      );
 
-      // Send confirmation email (fire-and-forget)
-      if (process.env.RESEND_API_KEY) {
-        sendAppointmentConfirmation({
-          name: appointment.fullName,
-          email: appointment.email,
+      if (!updated) {
+        // Another request already approved — return success idempotently
+        const existing = await PatientAppointment.findById(id);
+        return NextResponse.json({
+          message: "Payment approved.",
+          tokenNumber: existing?.tokenNumber,
+        });
+      }
+
+      // Await email so serverless environment doesn't kill the background task
+      try {
+        await sendAppointmentConfirmation({
+          name: updated.fullName,
+          email: updated.email,
           tokenNumber: token,
-          type: appointment.type,
-          date: appointment.preferredDate,
-          time: appointment.preferredTime,
-          meetLink: appointment.meetLink,
-        }).catch(() => {});
+          type: updated.type,
+          date: updated.preferredDate,
+          time: updated.preferredTime,
+          meetLink: updated.type === "online" ? PERMANENT_MEET_LINK : undefined,
+        });
+      } catch (err) {
+        console.error("Failed to send confirmation email:", err);
       }
 
       return NextResponse.json({
-        message: "Payment approved. Appointment confirmed.",
+        message: "Payment approved. Confirmation email sent to patient.",
         tokenNumber: token,
       });
-    } else {
-      appointment.paymentStatus = "payment_rejected";
-      appointment.status = "payment_pending";
-      appointment.paymentRejectionReason = reason?.trim() || "Payment could not be verified.";
-      // Clear screenshot so patient can re-upload
-      appointment.paymentScreenshotUrl = undefined;
-      appointment.paymentScreenshotPublicId = undefined;
-      await appointment.save();
-
-      if (process.env.RESEND_API_KEY) {
-        sendPaymentRejectionEmail({
-          name: appointment.fullName,
-          email: appointment.email,
-          reason: appointment.paymentRejectionReason,
-        }).catch(() => {});
-      }
-
-      return NextResponse.json({ message: "Payment rejected. Patient notified." });
     }
+
+    // ── Reject ────────────────────────────────────────────────────────────────
+    await PatientAppointment.findByIdAndUpdate(id, {
+      $set: {
+        paymentStatus: "payment_rejected",
+        status: "payment_pending",
+        paymentRejectionReason:
+          reason?.trim() || "Payment could not be verified.",
+        paymentScreenshotUrl: undefined,
+        paymentScreenshotPublicId: undefined,
+      },
+    });
+
+    try {
+      await sendPaymentRejectionEmail({
+        name: appointment.fullName,
+        email: appointment.email,
+        reason: reason?.trim() || "Payment could not be verified.",
+      });
+    } catch (err) {
+      console.error("Failed to send rejection email:", err);
+    }
+
+    return NextResponse.json({
+      message: "Payment rejected. Patient has been notified.",
+    });
   } catch (err) {
     console.error("Verify payment error:", err);
-    return NextResponse.json({ message: "Action failed." }, { status: 500 });
+    return NextResponse.json(
+      { message: "Action failed. Please try again." },
+      { status: 500 }
+    );
   }
 }

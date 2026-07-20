@@ -1,17 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPatientSession } from "@/lib/auth";
+import { getDoctorSession, getPatientSession } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  const session = getPatientSession(req);
-  if (!session) {
-    return NextResponse.json({ user: null }, { status: 200 });
+  // Check doctor session first
+  const doctorSession = getDoctorSession(req);
+  if (doctorSession) {
+    return NextResponse.json({
+      user: {
+        email: doctorSession.email,
+        name: "Dr. Aman Varshney",
+        role: "doctor",
+      },
+    });
   }
-  return NextResponse.json({
-    user: {
-      id: session.id,
-      name: session.name,
-      email: session.email,
-      role: session.role,
-    },
-  });
+
+  // Then patient session
+  const patientSession = getPatientSession(req);
+  if (patientSession) {
+    return NextResponse.json({
+      user: {
+        id: patientSession.id,
+        email: patientSession.email,
+        name: patientSession.name,
+        role: "patient",
+      },
+    });
+  }
+
+  return NextResponse.json({ user: null }, { status: 401 });
 }

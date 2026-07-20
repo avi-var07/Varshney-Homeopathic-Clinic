@@ -22,7 +22,7 @@ if (!global.__otpStore) {
 export const otpStore = global.__otpStore;
 
 export function setOtp(email: string, otp: string, name?: string): void {
-  const expiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+  const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
   otpStore.set(email, { otp, expiry, name });
 }
 

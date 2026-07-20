@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PatientProfile from "@/models/PatientProfile";
 import PatientAppointment from "@/models/PatientAppointment";
-import { isAdminAuthenticated } from "@/lib/auth";
+import { isDoctorAuthenticated } from "@/lib/auth";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

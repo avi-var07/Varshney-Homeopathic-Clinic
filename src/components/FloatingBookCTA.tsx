@@ -4,17 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiCalendar } from "react-icons/fi";
-import { useAuth } from "@/context/AuthContext";
 
-const HIDDEN_PATHS = ["/book", "/doctor", "/admin"];
+// Hide on these paths — doctor dashboard handles its own UI
+const HIDDEN_PATHS = ["/book", "/doctor", "/dashboard/"];
 
 export default function FloatingBookCTA() {
   const pathname = usePathname();
-  const { user } = useAuth();
   const [visible, setVisible] = useState(false);
 
-  const isDoctor = user?.role === "doctor";
-  const isAdmin  = user?.role === "admin";
   const isHidden = HIDDEN_PATHS.some((p) => pathname?.startsWith(p));
 
   useEffect(() => {
@@ -22,7 +19,7 @@ export default function FloatingBookCTA() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (isHidden || isDoctor || isAdmin) return null;
+  if (isHidden) return null;
 
   return (
     <div

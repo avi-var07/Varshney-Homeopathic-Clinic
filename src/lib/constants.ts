@@ -19,9 +19,15 @@ export const WHATSAPP_MESSAGE = encodeURIComponent(
 );
 export const WHATSAPP_LINK = `https://wa.me/${PHONE_RAW}?text=${WHATSAPP_MESSAGE}`;
 
-export const UPI_ID = process.env.NEXT_PUBLIC_UPI_ID || "dramanvarshney@ybl";
+export const UPI_ID = process.env.NEXT_PUBLIC_UPI_ID || "7388333991@paytm";
+
+// Fixed consultation fees — as per requirements
 export const CONSULTATION_FEE_ONLINE = "₹200";
-export const CONSULTATION_FEE_OFFLINE = "₹150";
+export const CONSULTATION_FEE_OFFLINE = "₹20"; // Non-refundable booking fee
+
+// Fixed permanent Google Meet room for all online consultations
+// Using NEXT_PUBLIC_ so it's accessible in client components too
+export const PERMANENT_MEET_LINK = "https://meet.google.com/ods-fxvx-ayk";
 
 export const CLINIC_TIMINGS = [
   { day: "Monday – Saturday", time: "11:00 AM – 2:00 PM & 4:00 PM – 8:00 PM" },
@@ -340,7 +346,7 @@ export const SAMPLE_BLOGS = [
     title: "How to Boost Immunity Before Monsoon Season",
     slug: "seasonal-viral-prevention",
     category: "Seasonal Health",
-    image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=800&q=80&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&q=80&auto=format&fit=crop",
     excerpt:
       "Monsoon brings viral infections. Learn how homeopathic preventive care strengthens your immunity and keeps your family healthy during seasonal changes.",
     readTime: "4 min read",

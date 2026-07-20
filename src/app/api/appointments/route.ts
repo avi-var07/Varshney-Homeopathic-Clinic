@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Appointment from "@/models/Appointment";
-import { isAdminAuthenticated, checkPublicRateLimit } from "@/lib/auth";
+import { isDoctorAuthenticated, checkPublicRateLimit } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   // Rate-limit public submissions: 5 per minute per IP
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
 
 // Protected — admin only
 export async function GET(req: NextRequest) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

@@ -17,10 +17,11 @@ export async function POST(req: NextRequest) {
     const {
       fullName, email, mobile, age, gender,
       address, symptoms, type, preferredDate, preferredTime,
+      questionnaireAnswers,
     } = body;
 
     // Validate required fields
-    if (!fullName || !email || !mobile || !age || !gender || !symptoms || !type || !preferredDate || !preferredTime) {
+    if (!fullName || !email || !mobile || !age || !gender || !type || !preferredDate || !preferredTime) {
       return NextResponse.json({ message: "All required fields must be filled." }, { status: 400 });
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -71,13 +72,15 @@ export async function POST(req: NextRequest) {
       age: age.trim(),
       gender,
       address: address?.trim(),
-      symptoms: symptoms.trim(),
+      symptoms: (symptoms?.trim()) || "To be filled via questionnaire",
       type,
       preferredDate,
       preferredTime,
       status: "payment_pending",
       paymentStatus: "pending_upload",
       deliveryStatus: "not_applicable",
+      questionnaireAnswers: questionnaireAnswers || [],
+      questionnaireSubmittedAt: questionnaireAnswers?.length > 0 ? new Date() : undefined,
     });
 
     // Notify clinic (fire-and-forget — works with SMTP or Resend)
@@ -86,14 +89,18 @@ export async function POST(req: NextRequest) {
       process.env.RESEND_API_KEY
     );
     if (hasEmail) {
-      notifyClinicNewAppointment({
-        name: fullName,
-        mobile,
-        type,
-        date: preferredDate,
-        time: preferredTime,
-        symptoms,
-      }).catch(() => {});
+      try {
+        await notifyClinicNewAppointment({
+          name: fullName,
+          mobile,
+          type,
+          date: preferredDate,
+          time: preferredTime,
+          symptoms,
+        });
+      } catch (err) {
+        console.error("Failed to notify clinic:", err);
+      }
     }
 
     return NextResponse.json(
@@ -117,7 +124,7 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     const appointments = await PatientAppointment.find({ email: session.email })
-      .select("-consultationNotes -doctorNotes")
+      .select("-doctorNotes -consultationNotes.notes")
       .sort({ createdAt: -1 })
       .lean();
 

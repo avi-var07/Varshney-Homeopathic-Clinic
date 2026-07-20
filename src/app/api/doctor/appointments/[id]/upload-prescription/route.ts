@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PatientAppointment from "@/models/PatientAppointment";
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import { isAdminAuthenticated } from "@/lib/auth";
+import { isDoctorAuthenticated } from "@/lib/auth";
+import { sendPrescriptionReadyEmail } from "@/lib/email";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -54,6 +55,13 @@ export async function POST(
     });
 
     await appointment.save();
+
+    // Auto-notify patient that prescription is ready
+    sendPrescriptionReadyEmail({
+      name: appointment.fullName,
+      email: appointment.email,
+      tokenNumber: appointment.tokenNumber || "",
+    }).catch((err) => console.error("Prescription email failed:", err));
 
     return NextResponse.json({
       message: "Prescription uploaded successfully.",

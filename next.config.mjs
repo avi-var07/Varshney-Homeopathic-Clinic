@@ -3,6 +3,11 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
 
+  // Prevent server-only packages from being bundled into client chunks
+  experimental: {
+    serverComponentsExternalPackages: ["bcryptjs", "nodemailer", "mongoose", "next-auth", "@auth/mongodb-adapter"],
+  },
+
   // Image optimisation
   images: {
     formats: ["image/avif", "image/webp"],

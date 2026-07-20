@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Blog from "@/models/Blog";
-import { isAdminAuthenticated } from "@/lib/auth";
+import { isDoctorAuthenticated } from "@/lib/auth";
 
 export async function GET(
   req: NextRequest,
@@ -23,7 +23,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   try {
@@ -45,7 +45,7 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   try {

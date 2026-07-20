@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Review from "@/models/Review";
-import { isAdminAuthenticated, checkPublicRateLimit } from "@/lib/auth";
+import { isDoctorAuthenticated, checkPublicRateLimit } from "@/lib/auth";
 
 // GET — admin only (for doctor/admin dashboard)
 export async function GET(req: NextRequest) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   try {
@@ -59,14 +59,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Send email notification to clinic
-    const clinicEmail = process.env.CLINIC_EMAIL;
-    if (clinicEmail) {
-      try {
-        const { sendEmail: sendReviewEmail } = await import("@/lib/reviewEmail");
-        await sendReviewEmail({ name: name.trim(), location, problem, rating, text: text.trim(), clinicEmail });
-      } catch {
-        // Email failed — review still saved
-      }
+    try {
+      const { notifyClinicNewReview } = await import("@/lib/email");
+      await notifyClinicNewReview({ name: name.trim(), location, problem, rating, text: text.trim() });
+    } catch {
+      // Email failure doesn't block the review submission
     }
 
     return NextResponse.json({ message: "Review submitted. Thank you!" }, { status: 201 });

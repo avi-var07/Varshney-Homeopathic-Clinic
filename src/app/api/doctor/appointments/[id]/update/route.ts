@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PatientAppointment from "@/models/PatientAppointment";
-import { isAdminAuthenticated } from "@/lib/auth";
-import { sendMeetLinkEmail } from "@/lib/email";
+import { isDoctorAuthenticated } from "@/lib/auth";
+import { sendMeetLinkEmail, sendConsultationCompleteEmail } from "@/lib/email";
+import { PERMANENT_MEET_LINK } from "@/lib/constants";
 
-// Doctor can: add meet link, add consultation note, update delivery, complete, cancel
+// Doctor can: add consultation note, update delivery, complete, cancel
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!isAdminAuthenticated(req)) {
+  if (!isDoctorAuthenticated(req)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -25,8 +26,8 @@ export async function PATCH(
     if (body.meetLink !== undefined) {
       appointment.meetLink = body.meetLink?.trim() || undefined;
 
-      // Send email with meet link
-      if (body.meetLink && process.env.RESEND_API_KEY) {
+      // Send email with meet link (always, not gated on Resend key)
+      if (body.meetLink) {
         sendMeetLinkEmail({
           name: appointment.fullName,
           email: appointment.email,
@@ -72,11 +73,33 @@ export async function PATCH(
 
     // ── Appointment status ─────────────────────────────────────────────────
     if (body.status !== undefined) {
-      const validStatuses = ["confirmed","consultation_started","cancelled","completed","payment_pending","payment_verification_pending"];
+      const validStatuses = [
+        "confirmed", "consultation_started", "cancelled", "completed",
+        "payment_pending", "payment_verification_pending",
+        "questionnaire_pending", "questionnaire_submitted",
+      ];
       if (!validStatuses.includes(body.status)) {
         return NextResponse.json({ message: "Invalid status." }, { status: 400 });
       }
+      const prevStatus = appointment.status;
       appointment.status = body.status;
+
+      // Auto-email on completion
+      if (body.status === "completed" && prevStatus !== "completed") {
+        const notes = appointment.consultationNotes || [];
+        const latest = (notes as any[])
+          .filter((n) => n.followUpDate)
+          .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())[0];
+        const followUpDate = latest?.followUpDate
+          ? new Date(latest.followUpDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+          : undefined;
+        sendConsultationCompleteEmail({
+          name: appointment.fullName,
+          email: appointment.email,
+          tokenNumber: appointment.tokenNumber || "",
+          followUpDate,
+        }).catch((err) => console.error("Completion email failed:", err));
+      }
     }
 
     // ── Doctor notes ───────────────────────────────────────────────────────
